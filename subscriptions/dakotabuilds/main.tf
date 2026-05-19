@@ -5,11 +5,6 @@ resource "azurerm_resource_group" "dakotabuilds-rg" {
   location = "westus2"
 }
 
-resource "azurerm_resource_group" "dakotabuilds-denmark-rg" {
-  name     = "dakotabuilds-denmark-rg"
-  location = "denmarkeast"
-}
-
 # STORAGE ACCOUNTS
 
 resource "azurerm_storage_account" "dakotabuilds" {
@@ -20,12 +15,35 @@ resource "azurerm_storage_account" "dakotabuilds" {
   account_replication_type = "LRS"
 }
 
-# STORAEG CONTAINERS
+resource "azurerm_storage_account" "dakotabuilds-databricks" {
+  name = "dakotabuildsdatabricks"
+  resource_group_name      = azurerm_resource_group.dakotabuilds-rg.name
+  location                 = azurerm_resource_group.dakotabuilds-rg.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+  is_hns_enabled = true
+}
+
+# STORAGE CONTAINERS
 
 resource "azurerm_storage_container" "dakotabuild-terraform-state" {
   name                  = "dakotabuilds-terraform-state"
   storage_account_id    = azurerm_storage_account.dakotabuilds.id
   container_access_type = "private"
+}
+
+resource "azurerm_storage_container" "dakotabuild-databricks-containers" {
+  name                  = "dakotabuilds-databricks-container"
+  storage_account_id    = azurerm_storage_account.dakotabuilds-databricks.id
+  container_access_type = "private"
+}
+
+# ROLE ASSIGNMENTS
+
+resource "azurerm_role_assignment" "dakotabuilds-access-connector-to-container" {
+  scope = azurerm_storage_container.dakotabuild-databricks-containers.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id = azurerm_databricks_access_connector.dakotabuilds_databricks_access_connector.identity[0].principal_id
 }
 
 # DNS ZONES
@@ -118,6 +136,24 @@ resource "azuread_service_principal" "k8s-external-secrets" {
 
 resource "azuread_service_principal_password" "k8s-external-secrets-password" {
     service_principal_id = azuread_service_principal.k8s-external-secrets.id
+}
+
+# DATABRICKS
+
+resource "azurerm_databricks_workspace" "dakotabuilds-databricks-workspace" {
+  name = "dakotabuilds-databricks-workspace"
+  resource_group_name = azurerm_resource_group.dakotabuilds-rg.name
+  location = azurerm_resource_group.dakotabuilds-rg.location
+  sku = "trial"
+}
+
+resource "azurerm_databricks_access_connector" "dakotabuilds_databricks_access_connector" {
+  name = "dakotabuilds_databricks_access_connector"
+  resource_group_name = azurerm_resource_group.dakotabuilds-rg.name
+  location = azurerm_resource_group.dakotabuilds-rg.location
+  identity {
+    type = "SystemAssigned"
+  }
 }
 
 # MODULES
