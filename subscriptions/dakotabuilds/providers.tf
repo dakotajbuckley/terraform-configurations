@@ -3,9 +3,15 @@ terraform {
       azurerm = {
         source = "hashicorp/azurerm"
       }
+      azuread = {
+        source = "hashicorp/azuread"
+      }
       argocd = {
         source = "argoproj-labs/argocd"
         version = "7.15.3"
+      }
+      databricks = {
+        source = "databricks/databricks"
       }
     }
 
