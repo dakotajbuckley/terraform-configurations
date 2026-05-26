@@ -15,14 +15,14 @@ resource "azurerm_storage_account" "dakotabuilds" {
   account_replication_type = "LRS"
 }
 
-resource "azurerm_storage_account" "dakotabuilds-databricks" {
-  name = "dakotabuildsdatabricks"
-  resource_group_name      = azurerm_resource_group.dakotabuilds-rg.name
-  location                 = azurerm_resource_group.dakotabuilds-rg.location
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
-  is_hns_enabled = true
-}
+# resource "azurerm_storage_account" "dakotabuilds-databricks" {
+#   name = "dakotabuildsdatabricks"
+#   resource_group_name      = azurerm_resource_group.dakotabuilds-rg.name
+#   location                 = azurerm_resource_group.dakotabuilds-rg.location
+#   account_tier             = "Standard"
+#   account_replication_type = "LRS"
+#   is_hns_enabled = true
+# }
 
 # STORAGE CONTAINERS
 
@@ -32,19 +32,19 @@ resource "azurerm_storage_container" "dakotabuild-terraform-state" {
   container_access_type = "private"
 }
 
-resource "azurerm_storage_container" "dakotabuild-databricks-containers" {
-  name                  = "dakotabuilds-databricks-container"
-  storage_account_id    = azurerm_storage_account.dakotabuilds-databricks.id
-  container_access_type = "private"
-}
+# resource "azurerm_storage_container" "dakotabuild-databricks-containers" {
+#   name                  = "dakotabuilds-databricks-container"
+#   storage_account_id    = azurerm_storage_account.dakotabuilds-databricks.id
+#   container_access_type = "private"
+# }
 
 # ROLE ASSIGNMENTS
 
-resource "azurerm_role_assignment" "dakotabuilds-access-connector-to-container" {
-  scope = azurerm_storage_container.dakotabuild-databricks-containers.id
-  role_definition_name = "Storage Blob Data Contributor"
-  principal_id = azurerm_databricks_access_connector.dakotabuilds_databricks_access_connector.identity[0].principal_id
-}
+# resource "azurerm_role_assignment" "dakotabuilds-access-connector-to-container" {
+#   scope = azurerm_storage_container.dakotabuild-databricks-containers.id
+#   role_definition_name = "Storage Blob Data Contributor"
+#   principal_id = azurerm_databricks_access_connector.dakotabuilds_databricks_access_connector.identity[0].principal_id
+# }
 
 # DNS ZONES
 
@@ -140,21 +140,53 @@ resource "azuread_service_principal_password" "k8s-external-secrets-password" {
 
 # DATABRICKS
 
-resource "azurerm_databricks_workspace" "dakotabuilds-databricks-workspace" {
-  name = "dakotabuilds-databricks-workspace"
-  resource_group_name = azurerm_resource_group.dakotabuilds-rg.name
-  location = azurerm_resource_group.dakotabuilds-rg.location
-  sku = "trial"
-}
+# resource "azurerm_databricks_workspace" "dakotabuilds-databricks-workspace" {
+#   name = "dakotabuilds-databricks-workspace"
+#   resource_group_name = azurerm_resource_group.dakotabuilds-rg.name
+#   location = azurerm_resource_group.dakotabuilds-rg.location
+#   sku = "trial"
+# }
 
-resource "azurerm_databricks_access_connector" "dakotabuilds_databricks_access_connector" {
-  name = "dakotabuilds_databricks_access_connector"
-  resource_group_name = azurerm_resource_group.dakotabuilds-rg.name
-  location = azurerm_resource_group.dakotabuilds-rg.location
-  identity {
-    type = "SystemAssigned"
-  }
-}
+# resource "azurerm_databricks_access_connector" "dakotabuilds_databricks_access_connector" {
+#   name = "dakotabuilds_databricks_access_connector"
+#   resource_group_name = azurerm_resource_group.dakotabuilds-rg.name
+#   location = azurerm_resource_group.dakotabuilds-rg.location
+#   identity {
+#     type = "SystemAssigned"
+#   }
+# }
+
+# resource "databricks_service_principal" "readonly_sql_app" {
+#   display_name          = "dakotabuilds-readonly-sql-app"
+#   databricks_sql_access = true
+# }
+
+# resource "databricks_grant" "sp_use_catalog" {
+#   catalog    = "dakotabuilds"
+#   principal  = databricks_service_principal.readonly_sql_app.application_id
+#   privileges = ["USE_CATALOG"]
+# }
+
+# resource "databricks_grant" "sp_use_schema" {
+#   schema     = "dakotabuilds.bronze"
+#   principal  = databricks_service_principal.readonly_sql_app.application_id
+#   privileges = ["USE_SCHEMA"]
+# }
+
+# resource "databricks_grant" "sp_select_customers" {
+#   table      = "dakotabuilds.bronze.customers"
+#   principal  = databricks_service_principal.readonly_sql_app.application_id
+#   privileges = ["SELECT"]
+# }
+
+# resource "databricks_permissions" "warehouse_permissions" {
+#   sql_endpoint_id = "<sql-warehouse-id>"
+
+#   access_control {
+#     service_principal_name = databricks_service_principal.readonly_sql_app.application_id
+#     permission_level       = "CAN_USE"
+#   }
+# }
 
 # MODULES
 

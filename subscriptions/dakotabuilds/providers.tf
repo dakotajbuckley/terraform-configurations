@@ -37,3 +37,7 @@ provider "azurerm" {
     }
 }
 
+provider "databricks" {
+  # host = azurerm_databricks_workspace.dakotabuilds-databricks-workspace.workspace_url
+}
+
