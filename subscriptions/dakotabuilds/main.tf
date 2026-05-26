@@ -121,6 +121,12 @@ resource "azurerm_key_vault_secret" "dakotabuilds-kv-favorite-food" {
   ]
 }
 
+resource "azurerm_key_vault_secret" "dakotabuilds-kv-databricks-readonly-app-secret" {
+  name = databricks_service_principal.readonly_sql_app.display_name
+  value = databricks_service_principal_secret.readonly_sql_app_secret.secret
+  key_vault_id = azurerm_key_vault.dakotabuilds-kv.id
+}
+
 # SERVICE PRINCIPALS
 
 resource "azuread_application" "k8s-external-secrets" {
@@ -139,6 +145,16 @@ resource "azuread_service_principal_password" "k8s-external-secrets-password" {
 }
 
 # DATABRICKS
+
+resource "databricks_service_principal" "readonly_sql_app" {
+  display_name = "dakotabuilds-readonly-sql-app"
+  databricks_sql_access = true
+}
+
+resource "databricks_service_principal_secret" "readonly_sql_app_secret" {
+  service_principal_id = databricks_service_principal.readonly_sql_app.id
+}
+
 
 # resource "azurerm_databricks_workspace" "dakotabuilds-databricks-workspace" {
 #   name = "dakotabuilds-databricks-workspace"
