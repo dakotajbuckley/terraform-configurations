@@ -111,16 +111,6 @@ resource "azurerm_key_vault_secret" "dakotabuilds-kv-last-name" {
   ]
 }
 
-resource "azurerm_key_vault_secret" "dakotabuilds-kv-favorite-food" {
-  name         = "favorite-food"
-  value        = "Burritos"
-  key_vault_id = azurerm_key_vault.dakotabuilds-kv.id
-
-  depends_on = [
-    azurerm_key_vault_access_policy.terraform_current_user,
-  ]
-}
-
 resource "azurerm_key_vault_secret" "dakotabuilds-kv-databricks-readonly-app-secret" {
   name = databricks_service_principal.readonly_sql_app.display_name
   value = databricks_service_principal_secret.readonly_sql_app_secret.secret
