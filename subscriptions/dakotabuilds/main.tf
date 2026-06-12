@@ -74,20 +74,20 @@ resource "azurerm_key_vault" "dakotabuilds-kv" {
   rbac_authorization_enabled = true
 }
 
-resource "azurerm_key_vault_access_policy" "terraform_current_user" {
-  key_vault_id = azurerm_key_vault.dakotabuilds-kv.id
-  tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = data.azurerm_client_config.current.object_id
+# resource "azurerm_key_vault_access_policy" "terraform_current_user" {
+#   key_vault_id = azurerm_key_vault.dakotabuilds-kv.id
+#   tenant_id    = data.azurerm_client_config.current.tenant_id
+#   object_id    = data.azurerm_client_config.current.object_id
 
-  secret_permissions = [
-    "Get",
-    "List",
-    "Set",
-    "Delete",
-    "Recover",
-    "Purge",
-  ]
-}
+#   secret_permissions = [
+#     "Get",
+#     "List",
+#     "Set",
+#     "Delete",
+#     "Recover",
+#     "Purge",
+#   ]
+# }
 
 # KEY VAULT SECRETS
 
@@ -96,9 +96,9 @@ resource "azurerm_key_vault_secret" "dakotabuilds-kv-first-name" {
   value        = "Dakota"
   key_vault_id = azurerm_key_vault.dakotabuilds-kv.id
 
-  depends_on = [
-    azurerm_key_vault_access_policy.terraform_current_user,
-  ]
+  # depends_on = [
+  #   azurerm_key_vault_access_policy.terraform_current_user,
+  # ]
 }
 
 resource "azurerm_key_vault_secret" "dakotabuilds-kv-last-name" {
@@ -106,26 +106,16 @@ resource "azurerm_key_vault_secret" "dakotabuilds-kv-last-name" {
   value        = "Buckley"
   key_vault_id = azurerm_key_vault.dakotabuilds-kv.id
 
-  depends_on = [
-    azurerm_key_vault_access_policy.terraform_current_user,
-  ]
+  # depends_on = [
+  #   azurerm_key_vault_access_policy.terraform_current_user,
+  # ]
 }
 
-resource "azurerm_key_vault_secret" "dakotabuilds-kv-favorite-food" {
-  name         = "favorite-food"
-  value        = "Burritos"
-  key_vault_id = azurerm_key_vault.dakotabuilds-kv.id
-
-  depends_on = [
-    azurerm_key_vault_access_policy.terraform_current_user,
-  ]
-}
-
-resource "azurerm_key_vault_secret" "dakotabuilds-kv-databricks-readonly-app-secret" {
-  name = databricks_service_principal.readonly_sql_app.display_name
-  value = databricks_service_principal_secret.readonly_sql_app_secret.secret
-  key_vault_id = azurerm_key_vault.dakotabuilds-kv.id
-}
+# resource "azurerm_key_vault_secret" "dakotabuilds-kv-databricks-readonly-app-secret" {
+#   name = databricks_service_principal.readonly_sql_app.display_name
+#   value = databricks_service_principal_secret.readonly_sql_app_secret.secret
+#   key_vault_id = azurerm_key_vault.dakotabuilds-kv.id
+# }
 
 # SERVICE PRINCIPALS
 
@@ -146,14 +136,14 @@ resource "azuread_service_principal_password" "k8s-external-secrets-password" {
 
 # DATABRICKS
 
-resource "databricks_service_principal" "readonly_sql_app" {
-  display_name = "dakotabuilds-readonly-sql-app"
-  databricks_sql_access = true
-}
+# resource "databricks_service_principal" "readonly_sql_app" {
+#   display_name = "dakotabuilds-readonly-sql-app"
+#   databricks_sql_access = true
+# }
 
-resource "databricks_service_principal_secret" "readonly_sql_app_secret" {
-  service_principal_id = databricks_service_principal.readonly_sql_app.id
-}
+# resource "databricks_service_principal_secret" "readonly_sql_app_secret" {
+#   service_principal_id = databricks_service_principal.readonly_sql_app.id
+# }
 
 
 # resource "azurerm_databricks_workspace" "dakotabuilds-databricks-workspace" {
