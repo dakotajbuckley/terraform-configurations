@@ -136,14 +136,14 @@ resource "azuread_service_principal_password" "k8s-external-secrets-password" {
 
 # DATABRICKS
 
-resource "databricks_service_principal" "readonly_sql_app" {
-  display_name = "dakotabuilds-readonly-sql-app"
-  databricks_sql_access = true
-}
+# resource "databricks_service_principal" "readonly_sql_app" {
+#   display_name = "dakotabuilds-readonly-sql-app"
+#   databricks_sql_access = true
+# }
 
-resource "databricks_service_principal_secret" "readonly_sql_app_secret" {
-  service_principal_id = databricks_service_principal.readonly_sql_app.id
-}
+# resource "databricks_service_principal_secret" "readonly_sql_app_secret" {
+#   service_principal_id = databricks_service_principal.readonly_sql_app.id
+# }
 
 
 # resource "azurerm_databricks_workspace" "dakotabuilds-databricks-workspace" {
