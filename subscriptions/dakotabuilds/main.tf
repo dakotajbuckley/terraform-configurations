@@ -111,11 +111,11 @@ resource "azurerm_key_vault_secret" "dakotabuilds-kv-last-name" {
   ]
 }
 
-resource "azurerm_key_vault_secret" "dakotabuilds-kv-databricks-readonly-app-secret" {
-  name = databricks_service_principal.readonly_sql_app.display_name
-  value = databricks_service_principal_secret.readonly_sql_app_secret.secret
-  key_vault_id = azurerm_key_vault.dakotabuilds-kv.id
-}
+# resource "azurerm_key_vault_secret" "dakotabuilds-kv-databricks-readonly-app-secret" {
+#   name = databricks_service_principal.readonly_sql_app.display_name
+#   value = databricks_service_principal_secret.readonly_sql_app_secret.secret
+#   key_vault_id = azurerm_key_vault.dakotabuilds-kv.id
+# }
 
 # SERVICE PRINCIPALS
 
