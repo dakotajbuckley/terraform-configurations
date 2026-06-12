@@ -96,9 +96,9 @@ resource "azurerm_key_vault_secret" "dakotabuilds-kv-first-name" {
   value        = "Dakota"
   key_vault_id = azurerm_key_vault.dakotabuilds-kv.id
 
-  depends_on = [
-    azurerm_key_vault_access_policy.terraform_current_user,
-  ]
+  # depends_on = [
+  #   azurerm_key_vault_access_policy.terraform_current_user,
+  # ]
 }
 
 resource "azurerm_key_vault_secret" "dakotabuilds-kv-last-name" {
@@ -106,9 +106,9 @@ resource "azurerm_key_vault_secret" "dakotabuilds-kv-last-name" {
   value        = "Buckley"
   key_vault_id = azurerm_key_vault.dakotabuilds-kv.id
 
-  depends_on = [
-    azurerm_key_vault_access_policy.terraform_current_user,
-  ]
+  # depends_on = [
+  #   azurerm_key_vault_access_policy.terraform_current_user,
+  # ]
 }
 
 # resource "azurerm_key_vault_secret" "dakotabuilds-kv-databricks-readonly-app-secret" {
